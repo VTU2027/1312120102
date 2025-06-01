@@ -1,0 +1,58 @@
+#program 1
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset (replace with your data path)
+data = pd.read_csv("Titanic-Dataset.csv")
+
+# Select numerical column
+# Changed to 'fare' to match the column name in the CSV file
+numerical_column = "Fare"
+
+# Calculate descriptive statistics
+mean_value = data[numerical_column].mean()
+median_value = data[numerical_column].median()
+mode_value = data[numerical_column].mode()[0] # Assuming single mode
+std_dev = data[numerical_column].std()
+variance = data[numerical_column].var()
+range_value = data[numerical_column].max() - data[numerical_column].min()
+
+print(f"Mean: {mean_value}")
+print(f"Median: {median_value}")
+print(f"Mode: {mode_value}")
+print(f"Standard Deviation: {std_dev}")
+print(f"Variance: {variance}")
+print(f"Range: {range_value}")
+
+# Visualize distribution
+plt.figure(figsize=(10, 5))
+plt.subplot(1, 2, 1)
+sns.histplot(data[numerical_column])
+plt.title("Histogram")
+
+plt.subplot(1, 2, 2)
+sns.boxplot(data=data, x=numerical_column)
+plt.title("Boxplot")
+plt.show()
+
+# Identify outliers using IQR
+Q1 = data[numerical_column].quantile(0.25)
+Q3 = data[numerical_column].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+outliers = data[(data[numerical_column] < lower_bound) | (data[numerical_column] > upper_bound)]
+print("Potential Outliers:", outliers[numerical_column].values)
+
+# Select categorical column and visualize frequency
+categorical_column = "Sex"
+category_counts = data[categorical_column].value_counts()
+
+plt.figure(figsize=(8, 5))
+plt.bar(category_counts.index, category_counts.values)
+plt.xlabel("Category")
+plt.ylabel("Frequency")
+plt.title("Category Frequencies")
+plt.show()
